@@ -86,6 +86,38 @@ int main(void)
         fprintf(stderr, "Error releasing interface.\n");
     }
 
+    unsigned char data[4];
+    int actual_length;
+    r = libusb_bulk_transfer(handle, LIBUSB_ENDPOINT_IN, data, sizeof(data), &actual_length, 0);
+    if (r == 0 && actual_length == sizeof(data)) {
+        // results of the transaction can now be found in the data buffer
+        // parse them here and report button press
+        int button = data[0];
+        switch (button) {
+            case 1:
+                fprintf(stdout, "Left button");
+                break;
+            case 2:
+                fprintf(stdout, "Right button");
+                break;
+            case 3:
+                fprintf(stdout, "Left+Right button");
+                break;
+            case 4:
+                fprintf(stdout, "Middle button");
+                break;
+            case 5:
+                fprintf(stdout, "Middle+Left button");
+                break;
+            case 6:
+                fprintf(stdout, "Middle+Right button");
+                break;
+        }
+        fprintf(stdout,"Coordinates %i,%i", data[1], data[2]);
+        data[3] > 0 ? fprintf(stdout, "Scrolling up.") : fprintf(stdout, "Scrolling down.");
+    } else {
+        fprintf(stderr, "Error reading interface.\n");
+    }
     libusb_exit(NULL);
     return 0;
 }
