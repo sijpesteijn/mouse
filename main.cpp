@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-//#include "libusb.h"
 #include "libusb-1.0/libusb.h"
 
 static void print_devs(libusb_device **devs)
@@ -80,11 +79,6 @@ int main(void)
         fprintf(stderr, "Error claiming interface.\n");
         return 1;
     }
-    r = libusb_release_interface(handle, 0);
-    if (0 != r)
-    {
-        fprintf(stderr, "Error releasing interface.\n");
-    }
 
     unsigned char data[4];
     int actual_length;
@@ -118,6 +112,13 @@ int main(void)
     } else {
         fprintf(stderr, "Error reading interface.\n");
     }
+
+    r = libusb_release_interface(handle, 0);
+    if (0 != r)
+    {
+        fprintf(stderr, "Error releasing interface.\n");
+    }
+
     libusb_exit(NULL);
     return 0;
 }
