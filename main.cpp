@@ -2,6 +2,9 @@
 
 #include "libusb-1.0/libusb.h"
 
+#define BULK_EP_OUT     0x82
+#define BULK_EP_IN      0x02
+
 static void print_devs(libusb_device **devs)
 {
     libusb_device *dev;
@@ -82,7 +85,7 @@ int main(void)
 
     unsigned char data[4];
     int actual_length;
-    r = libusb_bulk_transfer(handle, LIBUSB_ENDPOINT_IN, data, sizeof(data), &actual_length, 0);
+    r = libusb_bulk_transfer(handle, BULK_EP_IN, data, sizeof(data), &actual_length, 5000);
     if (r == 0 && actual_length == sizeof(data)) {
         // results of the transaction can now be found in the data buffer
         // parse them here and report button press
