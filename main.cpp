@@ -110,6 +110,7 @@ int main(void)
         fprintf(stdout,"Coordinates %i,%i", data[1], data[2]);
         data[3] > 0 ? fprintf(stdout, "Scrolling up.") : fprintf(stdout, "Scrolling down.");
     } else {
+        fprintf(stdout, "Actual length %i", actual_length);
         fprintf(stderr, "Error reading interface.\n");
     }
 
