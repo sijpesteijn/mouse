@@ -2,8 +2,15 @@
 
 #include "libusb-1.0/libusb.h"
 
-#define BULK_EP_OUT     0x82
-#define BULK_EP_IN      0x02
+#define TIMEOUT     5000
+#define CTRL_IN		(LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN | LIBUSB_RECIPIENT_INTERFACE)
+
+enum {
+    REQ_READBULK = 0x82,
+    REQ_WRITEADDR,
+    REQ_READDATA,
+    REQ_WRITEDATA,
+};
 
 static void print_devs(libusb_device **devs)
 {
@@ -84,8 +91,12 @@ int main(void)
     }
 
     unsigned char data[4];
+//    unsigned char packet[8] = {0};
+    r = libusb_control_transfer(handle, CTRL_IN, 0xc, REQ_READDATA,
+                                  0, data, 1, TIMEOUT);
+
     int actual_length;
-    r = libusb_interrupt_transfer(handle, LIBUSB_ENDPOINT_IN , data, sizeof(data), &actual_length, 0);
+//    r = libusb_interrupt_transfer(handle, LIBUSB_ENDPOINT_IN , data, sizeof(data), &actual_length, 0);
     if (r == 0 && actual_length == sizeof(data)) {
         // results of the transaction can now be found in the data buffer
         // parse them here and report button press
