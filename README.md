@@ -11,9 +11,10 @@ use
 add a file to /etc/udev/rules/99-usb.rules
 These are the usb bus and the usb device
 ```bash
-SUBSYSTEM=="usb", SYSFS{idProduct}=="2510", SYSFS{idVendor}=="093a", MODE="0666"
-SUBSYSTEM=="usb", SYSFS{idProduct}=="0002", SYSFS{idVendor}=="1d6b", MODE="0666"
+SUBSYSTEM=="usb", SYSFS{idProduct}=="2510", SYSFS{idVendor}=="093a", MODE="0666", GROUP="users"
+SUBSYSTEM=="usb", SYSFS{idProduct}=="0002", SYSFS{idVendor}=="1d6b", MODE="0666", GROUP="users"
 ```
+
 Reload rules
 ```bash
 sudo udevadm control --reload
