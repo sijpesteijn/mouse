@@ -96,38 +96,41 @@ int main(void)
 //                                  0, data, 1, TIMEOUT);
 
     int actual_length;
-    r = libusb_interrupt_transfer(handle, 0x81 , data, sizeof(data), &actual_length, 0);
-    if (r == 0 && actual_length == sizeof(data)) {
-        // results of the transaction can now be found in the data buffer
-        // parse them here and report button press
-        int button = data[0];
-        switch (button) {
-            case 1:
-                fprintf(stdout, "Left button");
-                break;
-            case 2:
-                fprintf(stdout, "Right button");
-                break;
-            case 3:
-                fprintf(stdout, "Left+Right button");
-                break;
-            case 4:
-                fprintf(stdout, "Middle button");
-                break;
-            case 5:
-                fprintf(stdout, "Middle+Left button");
-                break;
-            case 6:
-                fprintf(stdout, "Middle+Right button");
-                break;
+    int i = 0;
+    while(i++ < 20) {
+        r = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
+        if (r == 0 && actual_length == sizeof(data)) {
+            // results of the transaction can now be found in the data buffer
+            // parse them here and report button press
+            int button = data[0];
+            switch (button) {
+                case 1:
+                    fprintf(stdout, "Left button");
+                    break;
+                case 2:
+                    fprintf(stdout, "Right button");
+                    break;
+                case 3:
+                    fprintf(stdout, "Left+Right button");
+                    break;
+                case 4:
+                    fprintf(stdout, "Middle button");
+                    break;
+                case 5:
+                    fprintf(stdout, "Middle+Left button");
+                    break;
+                case 6:
+                    fprintf(stdout, "Middle+Right button");
+                    break;
+            }
+            fprintf(stdout, "Coordinates %i,%i", data[1], data[2]);
+            data[3] > 0 ? fprintf(stdout, "Scrolling up.") : fprintf(stdout, "Scrolling down.");
+        } else {
+            fprintf(stdout, "Actual length %i", actual_length);
+            fprintf(stderr, "Error reading interface.\n");
         }
-        fprintf(stdout,"Coordinates %i,%i", data[1], data[2]);
-        data[3] > 0 ? fprintf(stdout, "Scrolling up.") : fprintf(stdout, "Scrolling down.");
-    } else {
-        fprintf(stdout, "Actual length %i", actual_length);
-        fprintf(stderr, "Error reading interface.\n");
-    }
 
+    }
     r = libusb_release_interface(handle, 0);
     if (0 != r)
     {
