@@ -92,11 +92,11 @@ int main(void)
 
     unsigned char data[4];
 //    unsigned char packet[8] = {0};
-    r = libusb_control_transfer(handle, CTRL_IN, 0xc, REQ_READDATA,
-                                  0, data, 1, TIMEOUT);
+//    r = libusb_control_transfer(handle, CTRL_IN, 0xc, REQ_READDATA,
+//                                  0, data, 1, TIMEOUT);
 
     int actual_length;
-//    r = libusb_interrupt_transfer(handle, LIBUSB_ENDPOINT_IN , data, sizeof(data), &actual_length, 0);
+    r = libusb_interrupt_transfer(handle, 0x81 , data, sizeof(data), &actual_length, 0);
     if (r == 0 && actual_length == sizeof(data)) {
         // results of the transaction can now be found in the data buffer
         // parse them here and report button press
