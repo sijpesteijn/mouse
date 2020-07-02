@@ -97,7 +97,7 @@ int main(void)
 
     int actual_length;
     int i = 0;
-    while(i++ < 20) {
+    while(i++ < 500) {
         r = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
         if (r == 0 && actual_length == sizeof(data)) {
             // results of the transaction can now be found in the data buffer
@@ -105,26 +105,26 @@ int main(void)
             int button = data[0];
             switch (button) {
                 case 1:
-                    fprintf(stdout, "Left button");
+                    fprintf(stdout, "Left button\n");
                     break;
                 case 2:
-                    fprintf(stdout, "Right button");
+                    fprintf(stdout, "Right button\n");
                     break;
                 case 3:
-                    fprintf(stdout, "Left+Right button");
+                    fprintf(stdout, "Left+Right button\n");
                     break;
                 case 4:
-                    fprintf(stdout, "Middle button");
+                    fprintf(stdout, "Middle button\n");
                     break;
                 case 5:
-                    fprintf(stdout, "Middle+Left button");
+                    fprintf(stdout, "Middle+Left button\n");
                     break;
                 case 6:
-                    fprintf(stdout, "Middle+Right button");
+                    fprintf(stdout, "Middle+Right button\n");
                     break;
             }
-            fprintf(stdout, "Coordinates %i,%i", data[1], data[2]);
-            data[3] > 0 ? fprintf(stdout, "Scrolling up.") : fprintf(stdout, "Scrolling down.");
+            fprintf(stdout, "Coordinates %i,%i\n", data[1], data[2]);
+            data[3] > 0 ? fprintf(stdout, "Scrolling up.\n") : fprintf(stdout, "Scrolling down.\n");
         } else {
             fprintf(stdout, "Actual length %i", actual_length);
             fprintf(stderr, "Error reading interface.\n");
