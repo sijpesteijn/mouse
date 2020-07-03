@@ -19,3 +19,21 @@ Reload rules
 ```bash
 sudo udevadm control --reload
 ```
+
+#To build
+
+```
+cmake .
+make
+```
+
+#Usage
+
+```
+sudo ./mouse <vendorId> <productId> <endpoint>
+```
+
+example:
+```
+sudo ./mouse 0x0931 0x2510 0x81
+```
