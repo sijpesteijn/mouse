@@ -1,33 +1,10 @@
 #include <stdio.h>
-#include <errno.h>
-#include <cinttypes>
-#include <cstdlib>
 #include "libusb-1.0/libusb.h"
 
-void print_usage() {
-    fprintf(stdout, "Usage: \n");
-    fprintf(stdout, "\tsudo ./mouse <endpoint> <vendorId> <productId>\n");
-    fprintf(stdout, "\n\texample: sudo ./mouse 0x81 0x093a 0x2510 \n");
-}
-
-static bool
-str_to_uint16(const char *str, uint16_t *res)
-{
-    char *end;
-    errno = 0;
-    intmax_t val = strtoimax(str, &end, 10);
-    if (errno == ERANGE || val < 0 || val > UINT16_MAX || end == str || *end != '\0')
-        return false;
-    *res = (uint16_t) val;
-    return true;
-}
 
 int main(int argc, char *argv[])
 {
-    if (argc < 4) {
-        print_usage();
-        return 1;
-    }
+    fprintf(stdout, "\n\tTrying to open usb mouse on endpoint 0x81 with vendorId 0x093a and productId 0x2510 \n");
 
     libusb_device **devs;
     int r;
@@ -43,17 +20,6 @@ int main(int argc, char *argv[])
 
     libusb_free_device_list(devs, 1);
 
-    uint16_t vendorId = strtol(argv[1], NULL, 16);
-    uint16_t productId = strtol(argv[2], NULL, 16);
-//    if (!str_to_uint16(argv[2], &vendorId)) {
-//        fprintf(stderr, "vendorId conversion error\n");
-//        exit(2);
-//    }
-//
-//    if (!str_to_uint16(argv[3], &productId)) {
-//        fprintf(stderr, "productId conversion error\n");
-//        exit(2);
-//    }
     handle = libusb_open_device_with_vid_pid(0, 0x093a, 0x2510);
     if (!handle)
     {
@@ -77,11 +43,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Error claiming interface.\n");
         return 1;
     }
-
+    fprintf(stdout, "\n\tReading 500 mouse values.  \n");
     unsigned char data[4];
     int actual_length;
     int i = 0;
-    const unsigned char *endpoint = (const unsigned char *)argv[1];
     while(i++ < 500) {
         r = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
         if (r == 0 && actual_length == sizeof(data)) {
