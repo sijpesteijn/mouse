@@ -43,17 +43,18 @@ int main(int argc, char *argv[])
 
     libusb_free_device_list(devs, 1);
 
-    uint16_t vendorId, productId;
-    if (!str_to_uint16(argv[2], &vendorId)) {
-        fprintf(stderr, "vendorId conversion error\n");
-        exit(2);
-    }
-
-    if (!str_to_uint16(argv[3], &productId)) {
-        fprintf(stderr, "productId conversion error\n");
-        exit(2);
-    }
-    handle = libusb_open_device_with_vid_pid(0, 2362, 9488);
+    uint16_t vendorId = strtol(argv[1], NULL, 16);
+    uint16_t productId = strtol(argv[2], NULL, 16);
+//    if (!str_to_uint16(argv[2], &vendorId)) {
+//        fprintf(stderr, "vendorId conversion error\n");
+//        exit(2);
+//    }
+//
+//    if (!str_to_uint16(argv[3], &productId)) {
+//        fprintf(stderr, "productId conversion error\n");
+//        exit(2);
+//    }
+    handle = libusb_open_device_with_vid_pid(0, vendorId, productId);
     if (!handle)
     {
         fprintf(stderr, "Unable to open device.\n");
