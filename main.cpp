@@ -1,10 +1,25 @@
 #include <stdio.h>
+#include <errno.h>
+#include <cinttypes>
+#include <cstdlib>
 #include "libusb-1.0/libusb.h"
 
 void print_usage() {
     fprintf(stdout, "Usage: \n");
     fprintf(stdout, "\tsudo ./mouse <vendorId> <productId> <endpoint> \n");
     fprintf(stdout, "\n\texample: sudo ./mouse 0x0931 0x2510 0x81 \n");
+}
+
+static bool
+str_to_uint16(const char *str, uint16_t *res)
+{
+    char *end;
+    errno = 0;
+    intmax_t val = strtoimax(str, &end, 10);
+    if (errno == ERANGE || val < 0 || val > UINT16_MAX || end == str || *end != '\0')
+        return false;
+    *res = (uint16_t) val;
+    return true;
 }
 
 int main(int argc, char *argv[])
@@ -28,7 +43,17 @@ int main(int argc, char *argv[])
 
     libusb_free_device_list(devs, 1);
 
-    handle = libusb_open_device_with_vid_pid(0, 0x093a, 0x2510);
+    uint16_t vendorId, productId;
+    if (!str_to_uint16(argv[2], &vendorId)) {
+        fprintf(stderr, "vendorId conversion error\n");
+        exit(2);
+    }
+
+    if (!str_to_uint16(argv[2], &productId)) {
+        fprintf(stderr, "productId conversion error\n");
+        exit(2);
+    }
+    handle = libusb_open_device_with_vid_pid(0, vendorId, productId);
     if (!handle)
     {
         fprintf(stderr, "Unable to open device.\n");
@@ -55,8 +80,9 @@ int main(int argc, char *argv[])
     unsigned char data[4];
     int actual_length;
     int i = 0;
+    const unsigned char *endpoint = (const unsigned char *)argv[1];
     while(i++ < 500) {
-        r = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
+        r = libusb_interrupt_transfer(handle, *endpoint, data, sizeof(data), &actual_length, 0);
         if (r == 0 && actual_length == sizeof(data)) {
             // results of the transaction can now be found in the data buffer
             // parse them here and report button press
