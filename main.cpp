@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "productId conversion error\n");
         exit(2);
     }
-    handle = libusb_open_device_with_vid_pid(0, 0x093a, 0x2510);
+    handle = libusb_open_device_with_vid_pid(0, 2362, 9488);
     if (!handle)
     {
         fprintf(stderr, "Unable to open device.\n");
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     int i = 0;
     const unsigned char *endpoint = (const unsigned char *)argv[1];
     while(i++ < 500) {
-        r = libusb_interrupt_transfer(handle, 0x81, data, sizeof(data), &actual_length, 0);
+        r = libusb_interrupt_transfer(handle, 129, data, sizeof(data), &actual_length, 0);
         if (r == 0 && actual_length == sizeof(data)) {
             // results of the transaction can now be found in the data buffer
             // parse them here and report button press
