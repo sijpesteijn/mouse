@@ -6,8 +6,8 @@
 
 void print_usage() {
     fprintf(stdout, "Usage: \n");
-    fprintf(stdout, "\tsudo ./mouse <vendorId> <productId> <endpoint> \n");
-    fprintf(stdout, "\n\texample: sudo ./mouse 0x0931 0x2510 0x81 \n");
+    fprintf(stdout, "\tsudo ./mouse <endpoint> <vendorId> <productId>\n");
+    fprintf(stdout, "\n\texample: sudo ./mouse 0x81 0x0931 0x2510 \n");
 }
 
 static bool
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    if (!str_to_uint16(argv[2], &productId)) {
+    if (!str_to_uint16(argv[3], &productId)) {
         fprintf(stderr, "productId conversion error\n");
         exit(2);
     }
