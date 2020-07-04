@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "productId conversion error\n");
         exit(2);
     }
-    handle = libusb_open_device_with_vid_pid(0, 0x0931, 0x2510);
+    handle = libusb_open_device_with_vid_pid(0, 0x093a, 0x2510);
     if (!handle)
     {
         fprintf(stderr, "Unable to open device.\n");
